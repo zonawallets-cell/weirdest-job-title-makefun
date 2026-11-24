@@ -15,13 +15,20 @@ MAX_CHARS = 60
 
 
 def validate(text):
-    """Gate: 1-60 chars, UTF-8, a single line, not only whitespace."""
+    """Gate: 1-60 chars, UTF-8, a single line, not only whitespace.
+
+    Also requires at least one letter: a title of only digits or
+    punctuation would be word salad, not a job a person could hold
+    (the judge's criterion 4 -- it must sound like a real job).
+    """
     if not text or not text.strip():
         raise SystemExit("title must not be empty or only whitespace")
     if len(text) > MAX_CHARS:
         raise SystemExit("title exceeds %d chars: %d" % (MAX_CHARS, len(text)))
     if "\n" in text or "\r" in text:
         raise SystemExit("title must not contain a newline")
+    if not any(ch.isalpha() for ch in text):
+        raise SystemExit("title must contain at least one letter")
     text.encode("utf-8")  # raises if not valid UTF-8
     return text
 
